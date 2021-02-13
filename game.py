@@ -63,8 +63,10 @@ class Game:
 
     def randomize_board(self):
         # TODO, update self.board in here
+        for i, column in enumerate(self.board):
+            for j, tile in enumerate(column):
+                self.generate_random_tile(i, j)
 
-        pass
     
     def remove_tile_at_pos(self, positions):
         self.board.pop([positions[0][positions[1]]])
