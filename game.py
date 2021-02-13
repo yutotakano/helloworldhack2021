@@ -65,11 +65,31 @@ class Game:
     
     def remove_tile_at_pos(self, positions):
         # TODO: remove the tile at each position in the list
-        # then move down anything above
         pass
 
     def refill_empty_tiles(self):
         # TODO: fill all empty tiles with random ones
+        # only refill tiles from top, first move all tiles down
+        while(self.empty_checker()):
+            for i in range(5):
+                for j in range(5):
+                    if self.board[i][j] == None:
+                        if j == 0:
+                            self.generate_random_tile((i, j))
+                        else:
+                            self.swap_tiles((i, j-1), (i, j))
+        pass
+
+    # returns whether there are any None tile values inside board
+    def empty_checker(self):
+        for column in self.board:
+            for tile in column:
+                if tile == None:
+                    return True
+        return False
+                
+    def generate_random_tile(self, pos):
+        #TODO: fill with random tile
         pass
 
     def match_exists(self):
@@ -81,9 +101,9 @@ class Game:
 
     def swap_tiles(self, oldpos, newpos):
         # note that if it crashes because of this, it's because python lists of objects are not lists of references like I thought, sorry.
-        swapper = self.board[oldpos[0], oldpos[1]]
-        self.board[oldpos[0], oldpos[1]] = self.board[newpos[0], newpos[1]]
-        self.board[newpos[0], newpos[1]] = swapper
+        swapper = self.board[oldpos[0]][oldpos[1]]
+        self.board[oldpos[0]][oldpos[1]] = self.board[newpos[0]][newpos[1]]
+        self.board[newpos[0]][newpos[1]] = swapper
         
     def on_drag_and_drop(self, oldpos, newpos):
         # called when a tile is dragged and dropped

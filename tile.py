@@ -5,9 +5,14 @@ class Tile:
         self.width = 64
         self.height = 64
 
+        if isinstance(self.value, str):
+            self.kind = "op"
+        else:
+            self.kind = "num"
+
         # offset the position from default position
         self.offset_x = 0
         self.offset_y = 0
 
     def get_image_path(self):
-        return self.value + ".png"
+        return self.type + ".png"
