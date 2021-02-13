@@ -80,8 +80,10 @@ class Game:
         pass
 
     def swap_tiles(self, oldpos, newpos):
-        # TODO: switch the tiles at oldpos and newpos
-        pass
+        # note that if it crashes because of this, it's because python lists of objects are not lists of references like I thought, sorry.
+        swapper = self.board[oldpos[0], oldpos[1]]
+        self.board[oldpos[0], oldpos[1]] = self.board[newpos[0], newpos[1]]
+        self.board[newpos[0], newpos[1]] = swapper
         
     def on_drag_and_drop(self, oldpos, newpos):
         # called when a tile is dragged and dropped
@@ -107,10 +109,11 @@ class Game:
 
     def on_shuffle_click(self):
 
-        if self.remaining_shuffle_count < 0:
+        if self.remaining_shuffle_count <= 0:
             self.game_over()
         else:
             self.randomize_board()
+            self.remaining_shuffle_count -= 1
             
     def update_display(self):
         # screen.draw and stuff
