@@ -199,7 +199,10 @@ class Game:
                 image = pygame.image.load(tile.get_image_path())
                 self.screen.blit(image, (i*64+15+tile.offset_x, j*64+15+tile.offset_y))
 
-        points_text = self.font.render(str(self.points), True, pygame.Color(0, 0, 255))
+        points_text = self.font.render(str(self.remaining_shuffle_count), True, pygame.Color(0, 0, 0))
+        self.screen.blit(points_text, (124 - (points_text.get_rect().width / 2), 367))
+
+        points_text = self.font.render(str(self.points), True, pygame.Color(0, 0, 0))
         self.screen.blit(points_text, (300 - (points_text.get_rect().width / 2), 367))
 
         pygame.display.update()
