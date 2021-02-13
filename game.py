@@ -36,20 +36,20 @@ class Game:
 
             # Loop through all tiles, and check if the click is on one of them
             # If so, then set self.currently_dragging to a tuple of indices
-            for i, tiles in enumerate(self.board):
-                for j, tile in enumerate(tiles):
-                    if (event.pos[0] < (j + 1)*64 + 15 and event.pos[0] > j*64 + 15
-                    and event.pos[1] < (i + 1)*64 + 15 and event.pos[1] > i*64 + 15):
+            for i, column in enumerate(self.board):
+                for j, tile in enumerate(column):
+                    if (event.pos[0] < (i + 1)*64 + 15 and event.pos[0] > i*64 + 15
+                    and event.pos[1] < (j + 1)*64 + 15 and event.pos[1] > j*64 + 15):
                         self.currently_dragging = (i, j)
                         break
     
     def on_mouse_up(self, event):
         if event.button == 1 and self.currently_dragging:
             # check where mouse was lifted, similar to checking where it was pressed down
-            for i, tiles in enumerate(self.board):
-                for j, tile in enumerate(tiles):
-                    if (event.pos[0] < (j + 1)*64 + 15 and event.pos[0] > j*64 + 15
-                    and event.pos[1] < (i + 1)*64 + 15 and event.pos[1] > i*64 + 15
+            for i, column in enumerate(self.board):
+                for j, tile in enumerate(column):
+                    if (event.pos[0] < (i + 1)*64 + 15 and event.pos[0] > i*64 + 15
+                    and event.pos[1] < (j + 1)*64 + 15 and event.pos[1] > j*64 + 15
                     and (
                         abs(i - self.currently_dragging[0]) == 1 or
                         abs(j - self.currently_dragging[1]) == 1
@@ -120,8 +120,10 @@ class Game:
     
         for i, tiles in enumerate(self.board):
             for j, tile in enumerate(tiles):
+                if tile is None:
+                    continue
                 image = pygame.image.load(tile.get_image_path())
-                self.screen.blit(image, (j*64+15+tile.offset_x, i*64+15+tile.offset_y))
+                self.screen.blit(image, (i*64+15+tile.offset_x, j*64+15+tile.offset_y))
 
         pygame.display.update()
 
