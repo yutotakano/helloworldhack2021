@@ -1,4 +1,5 @@
 import pygame
+import random
 from tile import Tile
 
 class Game:
@@ -10,6 +11,7 @@ class Game:
         self.points = 0
         self.currently_dragging = None
         self.dragging_offset = None
+        self.remaining_shuffle_count = 3
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -54,29 +56,12 @@ class Game:
                     )):
                         self.on_drag_and_drop(self.currently_dragging, (i, j))
                         break
-
-    def on_mouse_move(self):
-        if self.currently_dragging:
-            pass
     
 
     def randomize_board(self):
         # TODO, update self.board in here
-        
+
         pass
-
-    def update_display(self):
-        # screen.draw and stuff
-        bg = pygame.image.load("bg.png")
-        bg = pygame.transform.scale(bg, (350, 435))
-        self.screen.blit(bg, (0, 0))
-    
-        for i, tiles in enumerate(self.board):
-            for j, tile in enumerate(tiles):
-                image = pygame.image.load(tile.get_image_path())
-                self.screen.blit(image, (i*64+15, j*64+15))
-
-        pygame.display.update()
     
     def remove_tile_at_pos(self, positions):
         # TODO: remove the tile at each position in the list
@@ -122,10 +107,23 @@ class Game:
 
     def on_shuffle_click(self):
 
-        if remaining_shuffle_count < 0:
+        if self.remaining_shuffle_count < 0:
             self.game_over()
         else:
             self.randomize_board()
+            
+    def update_display(self):
+        # screen.draw and stuff
+        bg = pygame.image.load("bg.png")
+        bg = pygame.transform.scale(bg, (350, 435))
+        self.screen.blit(bg, (0, 0))
+    
+        for i, tiles in enumerate(self.board):
+            for j, tile in enumerate(tiles):
+                image = pygame.image.load(tile.get_image_path())
+                self.screen.blit(image, (j*64+15+tile.offset_x, i*64+15+tile.offset_y))
+
+        pygame.display.update()
 
     def game_over(self):
         # TODO:
