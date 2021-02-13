@@ -6,7 +6,7 @@ class Game:
 
     def __init__(self):
         pygame.init()
-        self.board = [[Tile("operator", "add") for i in range(5)] for i in range(5)]
+        self.board = [[None for i in range(5)] for i in range(5)]
         self.screen = pygame.display.set_mode((350, 435))
         self.points = 0
         self.currently_dragging = None
