@@ -117,7 +117,7 @@ class Game:
 
         elif rand < (num_weight + op_weight)/total_weight:
             opdict = {
-                "+": "plus",
+                "+": "add",
                 "-": "minus"
             }
 
