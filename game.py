@@ -67,7 +67,8 @@ class Game:
         pass
     
     def remove_tile_at_pos(self, positions):
-        # TODO: remove the tile at each position in the list
+        self.board.pop([positions[0][positions[1]]])
+        self.board.insert([positions[0][positions[1]]])
         pass
 
     def refill_empty_tiles(self):
@@ -90,7 +91,7 @@ class Game:
                 if tile == None:
                     return True
         return False
-                
+
     def generate_random_tile(self, pos):
         #TODO: fill with random tile
         pass
