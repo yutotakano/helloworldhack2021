@@ -206,5 +206,6 @@ class Game:
 
     def game_over(self):
         # TODO:
-        self.pygame.quit()
-        pass
+        pygame.display.quit()
+        pygame.quit()
+        exit()
