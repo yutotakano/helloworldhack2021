@@ -96,7 +96,7 @@ class Game:
         #TODO: fill with random tile
         num_weight = 50
         op_weight = 20
-        eq_weight = 20
+        eq_weight = 10
         total_weight = num_weight + op_weight + eq_weight
 
         rand = random.uniform(0,1)
@@ -161,7 +161,8 @@ class Game:
             self.points += points
             
             # remove the tiles, add new random ones, then add those points
-            self.remove_tiles_at_pos(tile_positions)
+            for positions in tile_positions:
+                self.remove_tiles_at_pos(positions)
             self.refill_empty_tiles()
 
         if not did_enter_loop:
