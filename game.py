@@ -1,13 +1,15 @@
 import pygame
+from tile import Tile
 
 class Game:
 
     def __init__(self):
         pygame.init()
-        self.board = [[None for i in range(5)] for i in range(5)]
+        self.board = [[Tile("operator", "add") for i in range(5)] for i in range(5)]
         self.screen = pygame.display.set_mode((350, 435))
         self.points = 0
         self.currently_dragging = None
+        self.dragging_offset = None
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -53,8 +55,14 @@ class Game:
                         self.on_drag_and_drop(self.currently_dragging, (i, j))
                         break
 
+    def on_mouse_move(self):
+        if self.currently_dragging:
+            pass
+    
+
     def randomize_board(self):
         # TODO, update self.board in here
+        
         pass
 
     def update_display(self):
@@ -62,7 +70,11 @@ class Game:
         bg = pygame.image.load("bg.png")
         bg = pygame.transform.scale(bg, (350, 435))
         self.screen.blit(bg, (0, 0))
-        # TODO
+    
+        for i, tiles in enumerate(self.board):
+            for j, tile in enumerate(tiles):
+                image = pygame.image.load(tile.get_image_path())
+                self.screen.blit(image, (i*64+15, j*64+15))
 
         pygame.display.update()
     
