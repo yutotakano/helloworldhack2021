@@ -15,6 +15,7 @@ class Game:
         self.currently_dragging = None
         self.dragging_offset = None
         self.remaining_shuffle_count = 3
+        self.font = pygame.font.SysFont(None, 56)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -47,6 +48,7 @@ class Game:
                         break
     
     def on_mouse_up(self, event):
+        # If it is a left click and there's a drag going on
         if event.button == 1 and self.currently_dragging:
             # check where mouse was lifted, similar to checking where it was pressed down
             for i, column in enumerate(self.board):
@@ -59,7 +61,11 @@ class Game:
                     )):
                         self.on_drag_and_drop(self.currently_dragging, (i, j))
                         break
-    
+        # check if it's in the boundaries of the reset button
+        elif event.button == 1:
+            if (event.pos[0] > 22 and event.pos[0] < 106
+            and event.pos[1] > 360 and event.pos[1] < 404):
+                self.on_shuffle_click()
 
     def randomize_board(self):
         # TODO, update self.board in here
@@ -192,6 +198,9 @@ class Game:
                     continue
                 image = pygame.image.load(tile.get_image_path())
                 self.screen.blit(image, (i*64+15+tile.offset_x, j*64+15+tile.offset_y))
+
+        points_text = self.font.render(str(self.points), True, pygame.Color(0, 0, 255))
+        self.screen.blit(points_text, (300 - (points_text.get_rect().width / 2), 367))
 
         pygame.display.update()
 
