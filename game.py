@@ -1,6 +1,7 @@
 import pygame
 import random
 from tile import Tile
+from pygame import mixer
 
 class Game:
 
@@ -64,8 +65,9 @@ class Game:
         pass
     
     def remove_tile_at_pos(self, positions):
-        # TODO: remove the tile at each position in the list
-        # then move down anything above
+        self.board.pop([positions[0],positions[1]])
+        self.board.insert([positions[0],positions[1]])
+        # honestly not sure if this is how it works hopefully i got this right O.O
         pass
 
     def refill_empty_tiles(self):
