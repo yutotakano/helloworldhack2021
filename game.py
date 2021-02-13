@@ -65,7 +65,7 @@ class Game:
         # TODO, update self.board in here
         for i, column in enumerate(self.board):
             for j, tile in enumerate(column):
-                self.generate_random_tile(i, j)
+                self.generate_random_tile((i, j))
 
     
     def remove_tile_at_pos(self, positions):
