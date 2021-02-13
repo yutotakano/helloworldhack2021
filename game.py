@@ -93,7 +93,41 @@ class Game:
                 
     def generate_random_tile(self, pos):
         #TODO: fill with random tile
-        pass
+        num_weight = 50
+        op_weight = 20
+        eq_weight = 20
+        total_weight = num_weight + op_weight + eq_weight
+
+        rand = random.uniform(0,1)
+
+        if rand < num_weight/total_weight:
+            numdict = {
+                1: "one",
+                2: "two",
+                3: "three",
+                4: "four",
+                5: "five"
+            }
+
+            tile_number = random.randint(1,5)
+
+            tile = Tile(numdict[tile_number], tile_number)
+            self.board[pos[0]][pos[1]] = tile
+
+        elif rand < (num_weight + op_weight)/total_weight:
+            opdict = {
+                "+": "plus",
+                "-": "minus"
+            }
+
+            tile_value = random.choice(["+", "-"])
+
+            tile = Tile(opdict[tile_value], tile_value)
+            self.board[pos[0]][pos[1]] = tile
+
+        else:
+            tile = Tile("equals", "=")
+            self.board[pos[0]][pos[1]] = tile
 
     def match_exists(self):
         # TODO: finish
