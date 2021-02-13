@@ -1,8 +1,11 @@
 import pygame
 import random
 from tile import Tile
+from pygame import mixer
 
 class Game:
+
+
 
     def __init__(self):
         pygame.init()
@@ -97,6 +100,8 @@ class Game:
         # return None if no match
         # return list of tile (x,y) positions if match found
         # only returns the first match found
+        match_sound = mixer.Sound('match.wav')
+        match_sound.play()
         pass
 
     def swap_tiles(self, oldpos, newpos):
@@ -133,6 +138,8 @@ class Game:
             self.game_over()
         else:
             self.randomize_board()
+            reshuffle_sound = mixer.Sound('Reshuffle.wav')
+            reshuffle_sound.play()
             self.remaining_shuffle_count -= 1
             
     def update_display(self):
