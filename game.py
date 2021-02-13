@@ -71,7 +71,6 @@ class Game:
     def remove_tile_at_pos(self, positions):
         self.board.pop([positions[0][positions[1]]])
         self.board.insert([positions[0][positions[1]]])
-        pass
 
     def refill_empty_tiles(self):
         # TODO: fill all empty tiles with random ones
@@ -84,7 +83,6 @@ class Game:
                             self.generate_random_tile((i, j))
                         else:
                             self.swap_tiles((i, j-1), (i, j))
-        pass
 
     # returns whether there are any None tile values inside board
     def empty_checker(self):
