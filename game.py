@@ -136,6 +136,7 @@ class Game:
         # return list of tile (x,y) positions if match found
         # only returns the first match found
         match_sound = mixer.Sound('match.wav')
+        match_sound.set_volume(0.4)
         match_sound.play()
         pass
 
@@ -175,6 +176,7 @@ class Game:
         else:
             self.randomize_board()
             reshuffle_sound = mixer.Sound('Reshuffle.wav')
+            reshuffle_sound.set_volume(0.4)
             reshuffle_sound.play()
             self.remaining_shuffle_count -= 1
             
