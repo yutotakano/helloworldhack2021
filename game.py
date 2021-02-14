@@ -16,6 +16,17 @@ class Game:
         self.dragging_offset = None
         self.remaining_shuffle_count = 3
         self.font = pygame.font.SysFont(None, 56)
+        
+        # tile counters
+        self.equals_min = 2
+        self.equals_max = 6
+        self.equals_counter = 0
+
+        self.op_min = 3
+        self.op_max = 6
+        self.op_counter = 0
+
+        self.none_counter = 0
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -68,15 +79,21 @@ class Game:
                 self.on_shuffle_click()
 
     def randomize_board(self):
-        # TODO, update self.board in here
+        self.op_counter = 0
+        self.equals_counter = 0
         for i, column in enumerate(self.board):
             for j, tile in enumerate(column):
                 self.generate_random_tile((i, j))
 
-    
-    def remove_tile_at_pos(self, positions):
-        self.board.pop([positions[0][positions[1]]])
-        self.board.insert([positions[0][positions[1]]])
+    def remove_tile_at_pos(self, position):
+        tile_to_remove = self.board[position[0]][position[1]]
+        if tile_to_remove.kind == "op":
+            if tile_to_remove.value == "=":
+                self.equals_counter -= 1
+            else:
+                self.op_counter -= 1
+        self.board[position[0]][position[1]] = None
+        self.none_counter += 1
 
     def refill_empty_tiles(self):
         # TODO: fill all empty tiles with random ones
@@ -99,15 +116,48 @@ class Game:
         return False
 
     def generate_random_tile(self, pos):
-        #TODO: fill with random tile
         num_weight = 50
-        op_weight = 20
-        eq_weight = 10
+        op_weight = 10
+        eq_weight = 20
         total_weight = num_weight + op_weight + eq_weight
 
         rand = random.uniform(0,1)
 
-        if rand < num_weight/total_weight:
+        if (self.none_counter <= 2) & (self.equals_counter < self.equals_min):
+            tile = Tile("equals", "=")
+            self.board[pos[0]][pos[1]] = tile
+            self.equals_counter += 1
+
+        elif (self.none_counter <= 3) & (self.op_counter < self.op_min):
+            opdict = {
+                "+": "add",
+                "-": "minus"
+            }
+
+            tile_value = random.choice(["+", "-"])
+
+            tile = Tile(opdict[tile_value], tile_value)
+            self.board[pos[0]][pos[1]] = tile
+            self.op_counter += 1
+
+        elif (rand < eq_weight/total_weight) & (self.equals_counter < self.equals_max):
+            tile = Tile("equals", "=")
+            self.board[pos[0]][pos[1]] = tile
+            self.equals_counter += 1
+
+        elif (rand < (eq_weight + op_weight)/total_weight) & (self.op_counter < self.op_max):
+            opdict = {
+                "+": "add",
+                "-": "minus"
+            }
+
+            tile_value = random.choice(["+", "-"])
+
+            tile = Tile(opdict[tile_value], tile_value)
+            self.board[pos[0]][pos[1]] = tile
+            self.op_counter += 1
+
+        else:
             numdict = {
                 1: "one",
                 2: "two",
@@ -121,20 +171,7 @@ class Game:
             tile = Tile(numdict[tile_number], tile_number)
             self.board[pos[0]][pos[1]] = tile
 
-        elif rand < (num_weight + op_weight)/total_weight:
-            opdict = {
-                "+": "add",
-                "-": "minus"
-            }
-
-            tile_value = random.choice(["+", "-"])
-
-            tile = Tile(opdict[tile_value], tile_value)
-            self.board[pos[0]][pos[1]] = tile
-
-        else:
-            tile = Tile("equals", "=")
-            self.board[pos[0]][pos[1]] = tile
+        self.none_counter -= 1
 
     def match_exists(self):
         # TODO: finish
