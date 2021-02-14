@@ -167,6 +167,14 @@ class Game:
             
             self.refill_empty_tiles()
 
+    def initialize_demo1(self):
+        self.board = [
+            [Tile("one", 1), Tile("add", "+"), Tile("two", 2), Tile("equals", "="), Tile("one", 1)],
+            [Tile("four", 4), Tile("equals", "="), Tile("two", 2), Tile("four", 4), Tile("three", 3)],
+            [Tile("two", 2), Tile("one", 1), Tile("five", 5), Tile("add", "+"), Tile("minus", "-")],
+            [Tile("one", 1), Tile("three", 3), Tile("equals", "="), Tile("four", 4), Tile("three", 3)],
+            [Tile("minus", "-"), Tile("four", 4), Tile("three", 3), Tile("equals", "="), Tile("add", "+")],
+        ]
 
     def remove_tile_at_pos(self, position):
             

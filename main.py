@@ -2,6 +2,7 @@ from game import Game
 
 game = Game() 
 game.randomize_board()
+game.initialize_demo1()
 game.update_display()
 
 # Game loop
