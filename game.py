@@ -101,25 +101,25 @@ class Game:
             h_offset = min(64, max(-64, event.pos[0] - (self.currently_dragging[0]*64+15) - mouse_offset_x))
             v_offset = min(64, max(-64, event.pos[1] - (self.currently_dragging[1]*64+15) - mouse_offset_y))
 
-            if (event.pos[0] - began_x) > 20 and (event.pos[1] - began_y) > 20:
+            if (event.pos[0] - began_x) > 30 and (event.pos[1] - began_y) > 30:
                 self.dragging_direction = "downright"
                 offset = max(h_offset, v_offset)
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = offset
             
-            elif (event.pos[0] - began_x) > 20 and (event.pos[1] - began_y) < -20:
+            elif (event.pos[0] - began_x) > 30 and (event.pos[1] - began_y) < -30:
                 self.dragging_direction = "upright"
                 offset = max(h_offset, v_offset)
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = -offset
     
-            elif (event.pos[0] - began_x) < -20 and (event.pos[1] - began_y) > 20:
+            elif (event.pos[0] - began_x) < -30 and (event.pos[1] - began_y) > 30:
                 self.dragging_direction = "downleft"
                 offset = max(h_offset, v_offset)
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = -offset
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = offset
             
-            elif (event.pos[0] - began_x) < -20 and (event.pos[1] - began_y) < -20:
+            elif (event.pos[0] - began_x) < -30 and (event.pos[1] - began_y) < -30:
                 self.dragging_direction = "upleft"
                 offset = max(h_offset, v_offset)
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
