@@ -16,3 +16,20 @@ class Tile:
 
     def get_image_path(self):
         return self.type + ".png"
+
+    def isEqTile(self): 
+        if self.value == "=":
+            return True
+        else:
+            return False
+    def isPlusMinus(self):
+        if self.value == "+" or self.value == "-":
+            return True
+        else:
+            return False 
+    def isNumTile(self):
+        if self.kind == "num":
+            return True
+        else:
+            return False     
+
