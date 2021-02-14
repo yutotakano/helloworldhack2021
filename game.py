@@ -5,8 +5,6 @@ from pygame import mixer
 
 class Game:
 
-
-
     def __init__(self):
         pygame.init()
         self.board = [[None for i in range(5)] for i in range(5)]
@@ -103,46 +101,45 @@ class Game:
             v_offset = min(64, max(-64, event.pos[1] - (self.currently_dragging[1]*64+15) - mouse_offset_y))
 
             if (event.pos[0] - began_x) > 20 and (event.pos[1] - began_y) > 20:
-                # dragging towards bottom right
+                self.dragging_direction = "downright"
                 offset = max(h_offset, v_offset)
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = offset
             
             elif (event.pos[0] - began_x) > 20 and (event.pos[1] - began_y) < -20:
-                # dragging towards top right
+                self.dragging_direction = "upright"
                 offset = max(h_offset, v_offset)
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = -offset
     
             elif (event.pos[0] - began_x) < -20 and (event.pos[1] - began_y) > 20:
-                # dragging towards bottom left
+                self.dragging_direction = "downleft"
                 offset = max(h_offset, v_offset)
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = -offset
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = offset
             
             elif (event.pos[0] - began_x) < -20 and (event.pos[1] - began_y) < -20:
-                # dragging towards top left
+                self.dragging_direction = "upleft"
                 offset = max(h_offset, v_offset)
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = offset
     
             elif (event.pos[0] - began_x) > 10:
-                # dragging to the right
                 self.dragging_direction = "right"
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = min(64, max(-64, event.pos[0] - (self.currently_dragging[0]*64+15) - mouse_offset_x))
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = 0
+
             elif (event.pos[0] - began_x) < -10:
-                # dragging to the left
                 self.dragging_direction = "left"
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = min(64, max(-64, event.pos[0] - (self.currently_dragging[0]*64+15) - mouse_offset_x))
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = 0
+
             elif (event.pos[1] - began_y) > 10:
-                # dragging to the bottom
                 self.dragging_direction = "down"
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = 0
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = min(64, max(-64, event.pos[1] - (self.currently_dragging[1]*64+15) - mouse_offset_y))
+
             elif (event.pos[1] - began_y) < -10:
-                # dragging upwards
                 self.dragging_direction = "up"
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = 0
                 self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = min(64, max(-64, event.pos[1] - (self.currently_dragging[1]*64+15) - mouse_offset_y))
@@ -155,13 +152,17 @@ class Game:
         for i, column in enumerate(self.board):
             for j, tile in enumerate(column):
                 self.generate_random_tile((i, j))
-        list = self.match_exists()
-        while(list):
+        
+        while list := self.match_exists():
+            match_sound = mixer.Sound("assets/match.wav")
+            match_sound.set_volume(0.1)
+            match_sound.play()
+
             for position in list:
                 print(position)
                 self.remove_tile_at_pos(position)
+            
             self.refill_empty_tiles()
-            list = self.match_exists()
 
 
     def remove_tile_at_pos(self, position):
@@ -339,7 +340,7 @@ class Game:
         self.swap_tiles(oldpos, newpos)
 
         move_sound = mixer.Sound("assets/move.wav")
-        move_sound.set_volume(0.5)
+        move_sound.set_volume(0.8)
         move_sound.play()
 
         did_enter_loop = False
