@@ -240,25 +240,28 @@ class Game:
                 else: 
                     continue 
 
-        return matchList2    
+        return matchList2
     
     def match_exists(self):
         matches1 = self.lookForEq1()
         matches2 = self.looksForEq2()
-        matches1 = matches1.extend(matches2)
-        #netMatches = []
-        #[netMatches.append(x) for x in matches1 if x not in netMatches]
+        matches1 = matches1 + matches2
+        netMatches = []
+        [netMatches.append(x) for x in matches1 if x not in netMatches]
         match_sound = mixer.Sound('match.wav')
         match_sound.set_volume(0.4)
         match_sound.play()
-        return matches1
+        return netMatches
 
     def swap_tiles(self, oldpos, newpos):
         # note that if it crashes because of this, it's because python lists of objects are not lists of references like I thought, sorry.
         swapper = self.board[oldpos[0]][oldpos[1]]
         self.board[oldpos[0]][oldpos[1]] = self.board[newpos[0]][newpos[1]]
         self.board[newpos[0]][newpos[1]] = swapper
-        
+    
+    def calculate_points(self, points):
+        return 1
+    
     def on_drag_and_drop(self, oldpos, newpos):
         # called when a tile is dragged and dropped
         print("swapped", oldpos, "with", newpos)
@@ -275,8 +278,8 @@ class Game:
             self.points += points
             
             # remove the tiles, add new random ones, then add those points
-            for positions in tile_positions:
-                self.remove_tiles_at_pos(positions)
+            for position in tile_positions:
+                self.remove_tile_at_pos(position)
             self.refill_empty_tiles()
 
         if not did_enter_loop:
