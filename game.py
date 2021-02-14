@@ -156,10 +156,9 @@ class Game:
             for j, tile in enumerate(column):
                 self.generate_random_tile((i, j))
         list = self.match_exists()
-        print(list)
         while(list):
+            self.points += self.calculate_points(list)
             for position in list:
-                print(position)
                 self.remove_tile_at_pos(position)
             self.refill_empty_tiles()
             list = self.match_exists()
@@ -322,15 +321,14 @@ class Game:
         self.board[newpos[0]][newpos[1]] = swapper
     
     def calculate_points(self, points):
-        print(points)
-        if len(points) > 5:
+        if len(points) >= 5:
             return 5 * len(points)
         else:
             return len(points)
     
     def on_drag_and_drop(self, oldpos, newpos):
         # called when a tile is dragged and dropped
-        print("swapped", oldpos, "with", newpos)
+        # print("swapped", oldpos, "with", newpos)
         self.swap_tiles(oldpos, newpos)
 
         did_enter_loop = False
