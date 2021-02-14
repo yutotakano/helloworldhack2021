@@ -101,7 +101,7 @@ class Game:
 
             h_offset = min(64, max(-64, event.pos[0] - (self.currently_dragging[0]*64+15) - mouse_offset_x))
             v_offset = min(64, max(-64, event.pos[1] - (self.currently_dragging[1]*64+15) - mouse_offset_y))
-    
+
             if (event.pos[0] - began_x) > 20 and (event.pos[1] - began_y) > 20:
                 # dragging towards bottom right
                 offset = max(h_offset, v_offset)
@@ -156,7 +156,6 @@ class Game:
             for j, tile in enumerate(column):
                 self.generate_random_tile((i, j))
         list = self.match_exists()
-        print(list)
         while(list):
             for position in list:
                 print(position)
@@ -166,6 +165,7 @@ class Game:
 
 
     def remove_tile_at_pos(self, position):
+            
         tile_to_remove = self.board[position[0]][position[1]]
         if tile_to_remove == None:
             print("NANI, None in remove tile")
@@ -175,6 +175,11 @@ class Game:
                     self.equals_counter -= 1
                 else:
                     self.op_counter -= 1
+            for i in range(5):
+                tile_to_remove.next_poof()
+                self.update_display()
+                pygame.time.delay(30)
+
             self.board[position[0]][position[1]] = None
             self.none_counter += 1
 
@@ -330,8 +335,12 @@ class Game:
     
     def on_drag_and_drop(self, oldpos, newpos):
         # called when a tile is dragged and dropped
-        print("swapped", oldpos, "with", newpos)
+        print("want to swap", oldpos, "with", newpos)
         self.swap_tiles(oldpos, newpos)
+
+        move_sound = mixer.Sound("assets/move.wav")
+        move_sound.set_volume(0.5)
+        move_sound.play()
 
         did_enter_loop = False
 
@@ -339,15 +348,15 @@ class Game:
         while tile_positions := self.match_exists():
             did_enter_loop = True
             
-            match_sound = mixer.Sound('match.wav')
-            match_sound.set_volume(0.4)
+            match_sound = mixer.Sound("assets/match.wav")
+            match_sound.set_volume(0.1)
             match_sound.play()
 
             # find how many points to add
             points = self.calculate_points(tile_positions)
             self.points += points
             
-            # remove the tiles, add new random ones, then add those points
+            # remove the tiles
             for position in tile_positions:
                 self.remove_tile_at_pos(position)
             self.refill_empty_tiles()
@@ -359,7 +368,7 @@ class Game:
 
         if self.remaining_shuffle_count > 0:
             self.randomize_board()
-            reshuffle_sound = mixer.Sound('Reshuffle.wav')
+            reshuffle_sound = mixer.Sound("assets/Reshuffle.wav")
             reshuffle_sound.set_volume(0.4)
             reshuffle_sound.play()
             self.remaining_shuffle_count -= 1
@@ -368,7 +377,7 @@ class Game:
             
     def update_display(self):
         # screen.draw and stuff
-        bg = pygame.image.load("bg.png")
+        bg = pygame.image.load("assets/bg.png")
         bg = pygame.transform.scale(bg, (350, 435))
         self.screen.blit(bg, (0, 0))
 
@@ -379,6 +388,10 @@ class Game:
                 if tile is None:
                     continue
                 image = pygame.image.load(tile.get_image_path())
+                if tile.poof_sprite != 0:
+                    image = pygame.image.load(tile.get_poof_path())
+                    image = pygame.transform.scale(image, (64, 64))
+
                 if tile.offset_x or tile.offset_y:
                     image = pygame.transform.scale(image, (80, 80))
                     draw_above.append((image, (i*64+15-8+tile.offset_x, j*64+15-8+tile.offset_y)))

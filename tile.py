@@ -5,6 +5,8 @@ class Tile:
         self.width = 64
         self.height = 64
 
+        self.poof_sprite = 0
+
         if isinstance(self.value, str):
             self.kind = "op"
         else:
@@ -15,7 +17,7 @@ class Tile:
         self.offset_y = 0
 
     def get_image_path(self):
-        return self.type + ".png"
+        return "assets/" + self.type + ".png"
 
     def isEqTile(self): 
         if self.value == "=":
@@ -31,5 +33,12 @@ class Tile:
         if self.kind == "num":
             return True
         else:
-            return False     
+            return False
+
+    def next_poof(self):
+        self.poof_sprite += 1
+    
+    
+    def get_poof_path(self):
+        return "assets/poof_" + str(self.poof_sprite) + ".png"
 
