@@ -14,7 +14,7 @@ class Game:
         self.points = 0
         self.currently_dragging = None
         self.dragging_offset = None
-        self.remaining_shuffle_count = 100
+        self.remaining_shuffle_count = 3
         self.font = pygame.font.SysFont(None, 56)
         
         # tile counters
@@ -22,8 +22,8 @@ class Game:
         self.equals_max = 6
         self.equals_counter = 0
 
-        self.op_min = 3
-        self.op_max = 6
+        self.op_min = 2
+        self.op_max = 4
         self.op_counter = 0
 
         self.none_counter = 0

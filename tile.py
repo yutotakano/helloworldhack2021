@@ -22,7 +22,7 @@ class Tile:
             return True
         else:
             return False
-    def isPlusMinus(self):
+    def isOpTile(self):
         if self.value == "+" or self.value == "-":
             return True
         else:
