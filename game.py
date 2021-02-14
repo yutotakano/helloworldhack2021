@@ -215,14 +215,14 @@ class Game:
 
     def on_shuffle_click(self):
 
-        if self.remaining_shuffle_count <= 0:
-            self.game_over()
-        else:
+        if self.remaining_shuffle_count > 0:
             self.randomize_board()
             reshuffle_sound = mixer.Sound('Reshuffle.wav')
             reshuffle_sound.set_volume(0.4)
             reshuffle_sound.play()
             self.remaining_shuffle_count -= 1
+        else:
+            pass
             
     def update_display(self):
         # screen.draw and stuff
