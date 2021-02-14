@@ -77,8 +77,9 @@ class Game:
                     if (event.pos[0] < (i + 1)*64 + 15 and event.pos[0] > i*64 + 15
                     and event.pos[1] < (j + 1)*64 + 15 and event.pos[1] > j*64 + 15
                     and (
-                        abs(i - self.currently_dragging[0]) == 1 or
-                        abs(j - self.currently_dragging[1]) == 1
+                        (abs(i - self.currently_dragging[0]) == 1 and abs(j - self.currently_dragging[1]) == 0)
+                     or (abs(i - self.currently_dragging[0]) == 0 and abs(j - self.currently_dragging[1]) == 1)
+                     or (abs(i - self.currently_dragging[0]) == 1 and abs(j - self.currently_dragging[1]) == 1)
                     )):
                         self.on_drag_and_drop(self.currently_dragging, (i, j))
                         break
