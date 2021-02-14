@@ -205,25 +205,15 @@ class Game:
                 if(self.board[i][j].isEqTile()):
                     if(self.bothNum(self.board[i][j-1],self.board[i][j+1])):
                         if int(self.board[i][j+1].value) == int(self.board[i][j-1].value): 
-                            matchList1 + [(i,j-1),(i,j),(i,j+1)]
+                            matchList1 = matchList1 + [(i,j-1),(i,j),(i,j+1)]
                     
                         elif (j == 1 and self.board[i][3].isPlusMinus() and self.board[i][4].isNumTile()):
                             if int(self.board[i][0].value) == eval(str(self.board[i][2].value)+self.board[i][3].value+str(self.board[i][4].value)):
-                                matchList1 + [(i,0),(i,1),(i,2),(i,3),(i,4)]
-                            else:
-                                continue
+                                matchList1 = matchList1 + [(i,0),(i,1),(i,2),(i,3),(i,4)]
                     
                         elif (j == 3 and self.board[i][1].isPlusMinus() and self.board[i][0].isNumTile()):
-                            if int(self.board[i][4].value) == eval(str(self.board[i][2].value)+self.board[i][1].value+str(self.board[i][0].value)):
-                                matchList1 + [(i,0),(i,1),(i,2),(i,3),(i,4)]
-                            else:
-                                continue     
-
-                    else: 
-                        continue
-                else: 
-                    continue 
-
+                            if int(self.board[i][4].value) == eval(str(self.board[i][0].value)+self.board[i][1].value+str(self.board[i][2].value)):
+                                matchList1 = matchList1 + [(i,0),(i,1),(i,2),(i,3),(i,4)]     
         return matchList1
 
     def looksForEq2(self):
@@ -233,36 +223,28 @@ class Game:
                 if(self.board[i][j].isEqTile()):
                     if(self.bothNum(self.board[i-1][j],self.board[i+1][j])):
                         if int(self.board[i-1][j].value) == int(self.board[i+1][j].value): 
-                            matchList2 + [(i-1,j),(i,j),(i+1,j)]
+                            matchList2 = matchList2 + [(i-1,j),(i,j),(i+1,j)]
                     
                         elif (i == 1 and self.board[3][j].isPlusMinus() and self.board[4][j].isNumTile()):
                             if int(self.board[0][j].value) == eval(str(self.board[2][j].value)+self.board[3][j].value+str(self.board[4][j].value)):
-                                matchList2+ [(0,j),(1,j),(2,j),(3,j),(4,j)]
-                            else:
-                                continue
+                                matchList2 = matchList2 + [(0,j),(1,j),(2,j),(3,j),(4,j)]
                     
                         elif (i == 3 and self.board[1][j].isPlusMinus() and self.board[0][j].isNumTile()):
-                            if int(self.board[4][j].value) == eval(str(self.board[2][j].value)+self.board[1][j].value+str(self.board[0][j].value)):
-                                matchList2 + [(0,j),(1,j),(2,j),(3,j),(4,j)]
-                            else:
-                                continue     
+                            if int(self.board[4][j].value) == eval(str(self.board[0][j].value)+self.board[1][j].value+str(self.board[2][j].value)):
+                                matchList2 = matchList2 + [(0,j),(1,j),(2,j),(3,j),(4,j)]      
 
-                    else: 
-                        continue
-                else: 
-                    continue 
-
-        return matchList2    
+        return matchList2
     
     def match_exists(self):
         matches1 = self.lookForEq1()
         matches2 = self.looksForEq2()
-        matches1 = matches1 + (matches2)
-        if matches1 != []:
-            match_sound = mixer.Sound('match.wav')
-            match_sound.set_volume(0.4)
-            match_sound.play()
-        return matches1
+        matches1 = matches1 + matches2
+        netMatches = []
+        [netMatches.append(x) for x in matches1 if x not in netMatches]
+        match_sound = mixer.Sound('match.wav')
+        match_sound.set_volume(0.4)
+        match_sound.play()
+        return netMatches
 
 
 
@@ -271,7 +253,10 @@ class Game:
         swapper = self.board[oldpos[0]][oldpos[1]]
         self.board[oldpos[0]][oldpos[1]] = self.board[newpos[0]][newpos[1]]
         self.board[newpos[0]][newpos[1]] = swapper
-        
+    
+    def calculate_points(self, points):
+        return 1
+    
     def on_drag_and_drop(self, oldpos, newpos):
         # called when a tile is dragged and dropped
         print("swapped", oldpos, "with", newpos)
@@ -288,8 +273,8 @@ class Game:
             self.points += points
             
             # remove the tiles, add new random ones, then add those points
-            for positions in tile_positions:
-                self.remove_tile_at_pos(positions)
+            for position in tile_positions:
+                self.remove_tile_at_pos(position)
             self.refill_empty_tiles()
 
         if not did_enter_loop:
