@@ -7,6 +7,7 @@ class Game:
 
     def __init__(self):
         pygame.init()
+        pygame.display.set_caption('Arithmetic Bejeweled')
         self.board = [[None for i in range(5)] for i in range(5)]
         self.screen = pygame.display.set_mode((350, 435))
         self.points = 0
