@@ -241,10 +241,6 @@ class Game:
         matches1 = matches1 + matches2
         netMatches = []
         [netMatches.append(x) for x in matches1 if x not in netMatches]
-        if netMatches != []:
-            match_sound = mixer.Sound('match.wav')
-            match_sound.set_volume(0.4)
-            match_sound.play()
         return netMatches
 
 
@@ -256,7 +252,11 @@ class Game:
         self.board[newpos[0]][newpos[1]] = swapper
     
     def calculate_points(self, points):
-        return 1
+        print(points)
+        if len(points) > 5:
+            return 5 * len(points)
+        else:
+            return len(points)
     
     def on_drag_and_drop(self, oldpos, newpos):
         # called when a tile is dragged and dropped
@@ -268,9 +268,13 @@ class Game:
         # As long as a match exists, handle it
         while tile_positions := self.match_exists():
             did_enter_loop = True
+            
+            match_sound = mixer.Sound('match.wav')
+            match_sound.set_volume(0.4)
+            match_sound.play()
 
             # find how many points to add
-            points = 1 # self.calculate_points(tile_positions)
+            points = self.calculate_points(tile_positions)
             self.points += points
             
             # remove the tiles, add new random ones, then add those points
