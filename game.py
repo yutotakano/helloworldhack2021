@@ -13,7 +13,7 @@ class Game:
         self.screen = pygame.display.set_mode((350, 435))
         self.points = 0
         self.currently_dragging = None
-        self.dragging_offset = None
+        self.drag_origin = None
         self.remaining_shuffle_count = 3
         self.font = pygame.font.SysFont(None, 56)
         
@@ -42,13 +42,13 @@ class Game:
                 self.on_mouse_down(event)
             if event.type == pygame.MOUSEBUTTONUP:
                 self.on_mouse_up(event)
+            if event.type == pygame.MOUSEMOTION:
+                self.on_mouse_move(event)
 
     # Handle on mouse down
     def on_mouse_down(self, event):
         # If it is a left click
         if event.button == 1:
-            self.currently_dragging = None
-
             # Loop through all tiles, and check if the click is on one of them
             # If so, then set self.currently_dragging to a tuple of indices
             for i, column in enumerate(self.board):
@@ -56,14 +56,25 @@ class Game:
                     if (event.pos[0] < (i + 1)*64 + 15 and event.pos[0] > i*64 + 15
                     and event.pos[1] < (j + 1)*64 + 15 and event.pos[1] > j*64 + 15):
                         self.currently_dragging = (i, j)
+                        self.drag_origin = (event.pos[0], event.pos[1])
                         break
     
+    def reset_all_offsets(self):
+        for i, column in enumerate(self.board):
+            for j, tile in enumerate(column):
+                # snap back to default pos
+                tile.offset_x = 0
+                tile.offset_y = 0
+
     def on_mouse_up(self, event):
         # If it is a left click and there's a drag going on
         if event.button == 1 and self.currently_dragging:
             # check where mouse was lifted, similar to checking where it was pressed down
             for i, column in enumerate(self.board):
                 for j, tile in enumerate(column):
+                    # snap back to default pos
+                    self.reset_all_offsets()
+
                     if (event.pos[0] < (i + 1)*64 + 15 and event.pos[0] > i*64 + 15
                     and event.pos[1] < (j + 1)*64 + 15 and event.pos[1] > j*64 + 15
                     and (
@@ -77,6 +88,65 @@ class Game:
             if (event.pos[0] > 22 and event.pos[0] < 106
             and event.pos[1] > 360 and event.pos[1] < 404):
                 self.on_shuffle_click()
+        
+        self.currently_dragging = None
+        self.drag_origin = None
+    
+    def on_mouse_move(self, event):
+        if self.currently_dragging:
+            began_x, began_y = self.drag_origin
+            
+            mouse_offset_x = began_x - (self.currently_dragging[0]*64+15)
+            mouse_offset_y = began_y - (self.currently_dragging[1]*64+15)
+
+            h_offset = min(64, max(-64, event.pos[0] - (self.currently_dragging[0]*64+15) - mouse_offset_x))
+            v_offset = min(64, max(-64, event.pos[1] - (self.currently_dragging[1]*64+15) - mouse_offset_y))
+    
+            if (event.pos[0] - began_x) > 20 and (event.pos[1] - began_y) > 20:
+                # dragging towards bottom right
+                offset = max(h_offset, v_offset)
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = offset
+            
+            elif (event.pos[0] - began_x) > 20 and (event.pos[1] - began_y) < -20:
+                # dragging towards top right
+                offset = max(h_offset, v_offset)
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = -offset
+    
+            elif (event.pos[0] - began_x) < -20 and (event.pos[1] - began_y) > 20:
+                # dragging towards bottom left
+                offset = max(h_offset, v_offset)
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = -offset
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = offset
+            
+            elif (event.pos[0] - began_x) < -20 and (event.pos[1] - began_y) < -20:
+                # dragging towards top left
+                offset = max(h_offset, v_offset)
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = offset
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = offset
+    
+            elif (event.pos[0] - began_x) > 10:
+                # dragging to the right
+                self.dragging_direction = "right"
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = min(64, max(-64, event.pos[0] - (self.currently_dragging[0]*64+15) - mouse_offset_x))
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = 0
+            elif (event.pos[0] - began_x) < -10:
+                # dragging to the left
+                self.dragging_direction = "left"
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = min(64, max(-64, event.pos[0] - (self.currently_dragging[0]*64+15) - mouse_offset_x))
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = 0
+            elif (event.pos[1] - began_y) > 10:
+                # dragging to the bottom
+                self.dragging_direction = "down"
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = 0
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = min(64, max(-64, event.pos[1] - (self.currently_dragging[1]*64+15) - mouse_offset_y))
+            elif (event.pos[1] - began_y) < -10:
+                # dragging upwards
+                self.dragging_direction = "up"
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_x = 0
+                self.board[self.currently_dragging[0]][self.currently_dragging[1]].offset_y = min(64, max(-64, event.pos[1] - (self.currently_dragging[1]*64+15) - mouse_offset_y))
+
 
     def randomize_board(self):
         self.op_counter = 0
@@ -301,13 +371,22 @@ class Game:
         bg = pygame.image.load("bg.png")
         bg = pygame.transform.scale(bg, (350, 435))
         self.screen.blit(bg, (0, 0))
+
+        draw_above = []
     
         for i, tiles in enumerate(self.board):
             for j, tile in enumerate(tiles):
                 if tile is None:
                     continue
                 image = pygame.image.load(tile.get_image_path())
-                self.screen.blit(image, (i*64+15+tile.offset_x, j*64+15+tile.offset_y))
+                if tile.offset_x or tile.offset_y:
+                    image = pygame.transform.scale(image, (80, 80))
+                    draw_above.append((image, (i*64+15-8+tile.offset_x, j*64+15-8+tile.offset_y)))
+                else:
+                    self.screen.blit(image, (i*64+15, j*64+15))
+        
+        for stuff in draw_above:
+            self.screen.blit(stuff[0], stuff[1])
 
         points_text = self.font.render(str(self.remaining_shuffle_count), True, pygame.Color(0, 0, 0))
         self.screen.blit(points_text, (124 - (points_text.get_rect().width / 2), 367))
