@@ -81,6 +81,7 @@ class Game:
     def randomize_board(self):
         self.op_counter = 0
         self.equals_counter = 0
+        self.none_counter = 25
         for i, column in enumerate(self.board):
             for j, tile in enumerate(column):
                 self.generate_random_tile((i, j))
