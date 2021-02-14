@@ -193,7 +193,7 @@ class Game:
             return False 
 
     def bothPlusMinus(self,tile1,tile2):
-        if (tile2.isPlusMinus() and tile1.isPlusMinus()):
+        if (tile2.isOpTile() and tile1.isOpTile()):
             return True
         else:
             return False
@@ -207,11 +207,11 @@ class Game:
                         if int(self.board[i][j+1].value) == int(self.board[i][j-1].value): 
                             matchList1 = matchList1 + [(i,j-1),(i,j),(i,j+1)]
                     
-                        elif (j == 1 and self.board[i][3].isPlusMinus() and self.board[i][4].isNumTile()):
+                        elif (j == 1 and self.board[i][3].isOpTile() and self.board[i][4].isNumTile()):
                             if int(self.board[i][0].value) == eval(str(self.board[i][2].value)+self.board[i][3].value+str(self.board[i][4].value)):
                                 matchList1 = matchList1 + [(i,0),(i,1),(i,2),(i,3),(i,4)]
                     
-                        elif (j == 3 and self.board[i][1].isPlusMinus() and self.board[i][0].isNumTile()):
+                        elif (j == 3 and self.board[i][1].isOpTile() and self.board[i][0].isNumTile()):
                             if int(self.board[i][4].value) == eval(str(self.board[i][0].value)+self.board[i][1].value+str(self.board[i][2].value)):
                                 matchList1 = matchList1 + [(i,0),(i,1),(i,2),(i,3),(i,4)]     
         return matchList1
@@ -225,11 +225,11 @@ class Game:
                         if int(self.board[i-1][j].value) == int(self.board[i+1][j].value): 
                             matchList2 = matchList2 + [(i-1,j),(i,j),(i+1,j)]
                     
-                        elif (i == 1 and self.board[3][j].isPlusMinus() and self.board[4][j].isNumTile()):
+                        elif (i == 1 and self.board[3][j].isOpTile() and self.board[4][j].isNumTile()):
                             if int(self.board[0][j].value) == eval(str(self.board[2][j].value)+self.board[3][j].value+str(self.board[4][j].value)):
                                 matchList2 = matchList2 + [(0,j),(1,j),(2,j),(3,j),(4,j)]
                     
-                        elif (i == 3 and self.board[1][j].isPlusMinus() and self.board[0][j].isNumTile()):
+                        elif (i == 3 and self.board[1][j].isOpTile() and self.board[0][j].isNumTile()):
                             if int(self.board[4][j].value) == eval(str(self.board[0][j].value)+self.board[1][j].value+str(self.board[2][j].value)):
                                 matchList2 = matchList2 + [(0,j),(1,j),(2,j),(3,j),(4,j)]      
 
@@ -241,9 +241,10 @@ class Game:
         matches1 = matches1 + matches2
         netMatches = []
         [netMatches.append(x) for x in matches1 if x not in netMatches]
-        match_sound = mixer.Sound('match.wav')
-        match_sound.set_volume(0.4)
-        match_sound.play()
+        if netMatches != []:
+            match_sound = mixer.Sound('match.wav')
+            match_sound.set_volume(0.4)
+            match_sound.play()
         return netMatches
 
 
